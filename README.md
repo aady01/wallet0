@@ -2,7 +2,9 @@
 
 A secure, client-side Solana wallet generator with a clean, modern UI built with Next.js, TypeScript, and Tailwind CSS.
 
-![Financial Fun House Screenshot](https://via.placeholder.com/800x450)
+![Financial Fun House Screenshot]
+![image](https://github.com/user-attachments/assets/12f93fe2-cbc7-42c4-a03e-93093e4a804e)
+
 
 ## Features
 
