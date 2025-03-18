@@ -10,7 +10,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -95,7 +94,7 @@ export default function Kosh() {
       }
 
       toast.success("Wallet generated successfully!");
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to generate wallet");
     }
   };
@@ -145,7 +144,7 @@ export default function Kosh() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-4xl font-bold dark:text-white tracking-tight">
-            Hierarchical Deterministic wallet
+            Financial Fun House
           </h1>
         </div>
         <div>
