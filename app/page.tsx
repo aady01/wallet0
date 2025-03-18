@@ -95,6 +95,7 @@ export default function Kosh() {
 
       toast.success("Wallet generated successfully!");
     } catch (err) {
+      console.error(err); // Using the err variable to fix ESLint error
       toast.error("Failed to generate wallet");
     }
   };
@@ -142,7 +143,7 @@ export default function Kosh() {
       className={`${dmSans.variable} font-sans container mx-auto px-4 py-6 dark:bg-black min-h-screen`}
     >
       <div className="flex justify-between items-center mb-8">
-        <div>
+        <div className="fixed top-0 w-full h-16 flex justify-center items-center backdrop-blur-sm bg-white/80 dark:bg-black/80 z-10 border-b border-gray-200 dark:border-gray-800">
           <h1 className="text-4xl font-bold dark:text-white tracking-tight">
             Financial Fun House
           </h1>
@@ -152,7 +153,7 @@ export default function Kosh() {
             variant="outline"
             size="icon"
             onClick={toggleTheme}
-            className="rounded-full"
+            className="fixed top-4 right-4 z-50 rounded-full"
           >
             {theme === "dark" ? (
               <Sun className="h-4 w-4" />
