@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Financial Fun House - Solana Wallet Generator
+
+A secure, client-side Solana wallet generator with a clean, modern UI built with Next.js, TypeScript, and Tailwind CSS.
+
+![Financial Fun House Screenshot]
+![image](https://github.com/user-attachments/assets/12f93fe2-cbc7-42c4-a03e-93093e4a804e)
+
+
+## Features
+
+- **Generate Solana Wallets**: Create new wallets with randomly generated mnemonics or use your existing secret phrases
+- **Dark/Light Mode**: Toggle between dark and light themes for comfortable viewing
+- **Secure by Design**: All cryptographic operations happen locally in your browser
+- **Modern UI**: Built with DM Sans font, responsive design, and clean aesthetics
+- **Multiple Wallet Management**: Generate and store multiple wallets in a session
+- **Privacy Controls**: Show/hide sensitive information like private keys and mnemonics
+- **Copy Functionality**: Easily copy public keys, private keys, and secret phrases to clipboard
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 16.8.0 or newer
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/financial-fun-house.git
+cd financial-fun-house
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Generating a New Wallet
 
-## Learn More
+1. Leave the input field blank and click "Add Wallet" to generate a completely new wallet with a random mnemonic phrase.
+2. The generated wallet will appear in the Vault section.
 
-To learn more about Next.js, take a look at the following resources:
+### Importing an Existing Wallet
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Enter your existing 12/24-word secret phrase in the input field.
+2. Click "Add Wallet" to import your wallet.
+3. Your wallet details will appear in the Vault section.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Managing Wallets
 
-## Deploy on Vercel
+- **View Private Keys/Mnemonics**: Click the eye icon to toggle visibility of sensitive information.
+- **Copy Details**: Use the copy button to copy public keys, private keys, or mnemonics to your clipboard.
+- **Delete Wallet**: Remove individual wallets with the trash icon.
+- **Clear All Wallets**: Use the "Clear Wallets" button to remove all wallets from your session.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Security Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- This application runs entirely on the client-side; no data is ever sent to a server.
+- Secret phrases and private keys are never stored anywhere except in your browser's memory during the current session.
+- Always use this application on a secure device and connection.
+- Consider running this application locally for maximum security.
+- **Warning**: Anyone with access to your secret phrase or private key has complete control over your wallet and funds.
+
+## Tech Stack
+
+- **Next.js**: React framework for building the user interface
+- **TypeScript**: For type-safe code
+- **Tailwind CSS**: For styling
+- **shadcn/ui**: For UI components
+- **Solana Web3.js**: For Solana blockchain interactions
+- **bip39**: For mnemonic phrase handling
+- **ed25519-hd-key**: For HD wallet derivation
+
+## Development
+
+### Folder Structure
+
+```
+/
+├── app/
+│   └── page.tsx         # Main application page
+├── components/
+│   └── ui/              # UI components
+├── public/              # Static assets
+├── styles/             
+│   └── globals.css      # Global styles
+└── package.json         # Project dependencies
+```
+
+### Building for Production
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind. Use at your own risk. The developers are not responsible for any loss of funds or other damages that may occur from using this software.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
