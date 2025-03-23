@@ -46,7 +46,7 @@ interface WalletData {
   path: string; // Added path to store the derivation path
 }
 
-export default function hdWallet() {
+export default function HdWallet() {
   const [mnemonic, setMnemonic] = useState<string>("");
   const [wallets, setWallets] = useState<WalletData[]>([]);
   const [showPrivateKeys, setShowPrivateKeys] = useState<
