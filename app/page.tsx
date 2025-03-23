@@ -43,9 +43,10 @@ interface WalletData {
   publicKey: string;
   privateKey: string;
   mnemonic: string;
+  path: string; // Added path to store the derivation path
 }
 
-export default function Kosh() {
+export default function hdWallet() {
   const [mnemonic, setMnemonic] = useState<string>("");
   const [wallets, setWallets] = useState<WalletData[]>([]);
   const [showPrivateKeys, setShowPrivateKeys] = useState<
@@ -72,7 +73,16 @@ export default function Kosh() {
       }
 
       const seed = bip39.mnemonicToSeedSync(phrase);
-      const path = "m/44'/501'/0'/0'";
+
+      // Calculate the next index based on existing wallets with the same mnemonic
+      const existingWalletsWithSameMnemonic = wallets.filter(
+        (w) => w.mnemonic === phrase
+      );
+      const nextIndex = existingWalletsWithSameMnemonic.length;
+
+      // Create a unique path for this wallet using the index
+      const path = `m/44'/501'/${nextIndex}'/0'`;
+
       const derivedSeed = derivePath(path, seed.toString("hex")).key;
       const keypair = Keypair.fromSeed(derivedSeed);
 
@@ -85,6 +95,7 @@ export default function Kosh() {
           publicKey: keypair.publicKey.toBase58(),
           privateKey: Buffer.from(keypair.secretKey).toString("hex"),
           mnemonic: phrase,
+          path: path, // Store the path used
         },
       ]);
 
@@ -141,30 +152,32 @@ export default function Kosh() {
   return (
     <div className={`${dmSans.variable} font-sans min-h-screen dark:bg-black`}>
       {/* Header with responsive padding and sizing */}
-      <div className="fixed top-0 w-full h-16 md:h-20 flex justify-center items-center backdrop-blur-sm bg-white/80 dark:bg-black/80 z-10 border-b border-gray-200 dark:border-gray-800 px-4">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold dark:text-white tracking-tight truncate max-w-full">
-          Hierarchical Deterministic Wallet
-        </h1>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={toggleTheme}
-          className="fixed top-4 right-4 z-50 rounded-full"
-          aria-label={
-            theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-          }
-        >
-          {theme === "dark" ? (
-            <Sun className="h-4 w-4" />
-          ) : (
-            <Moon className="h-4 w-4" />
-          )}
-        </Button>
+      <div className="fixed top-0 w-full h-16 md:h-20 flex flex-col justify-center items-center backdrop-blur-sm bg-white/80 dark:bg-black/80 z-10 border-b border-gray-200 dark:border-gray-800 px-4 py-2">
+        <div className="w-full flex justify-center items-center relative">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold dark:text-white tracking-tight text-center px-8">
+            Hierarchical Deterministic Wallet
+          </h1>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleTheme}
+            className="absolute right-0 rounded-full"
+            aria-label={
+              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+            }
+          >
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Main container with responsive padding */}
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8">
-        <Card className="mb-8 dark:bg-gray-900 dark:border-gray-800 shadow-md">
+        <Card className="mb-8 dark:bg-black dark:border-gray-800 shadow-md">
           <CardHeader>
             <CardTitle className="dark:text-white text-xl md:text-2xl">
               Generate New Wallet
@@ -182,7 +195,7 @@ export default function Kosh() {
                 placeholder="Enter your secret phrase (or leave blank to generate)"
               />
               <Button
-                className="dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-lg w-full sm:w-auto"
+                className="cursor-pointer dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-lg w-full sm:w-auto"
                 onClick={generateWallet}
               >
                 Add Wallet
@@ -226,7 +239,7 @@ export default function Kosh() {
             variant="destructive"
             onClick={clearAllWallets}
             disabled={wallets.length === 0}
-            className="rounded-lg text-xs sm:text-sm"
+            className="cursor-pointer rounded-md text-xs sm:text-sm"
             size="sm"
           >
             Clear Wallets
@@ -234,7 +247,7 @@ export default function Kosh() {
         </div>
 
         {wallets.length === 0 ? (
-          <Card className="dark:bg-gray-900 dark:border-gray-800 shadow-md">
+          <Card className="dark:bg-black dark:border-gray-800 shadow-md">
             <CardContent className="p-8 text-center text-muted-foreground">
               No wallets generated yet. Add a wallet to get started.
             </CardContent>
@@ -244,7 +257,7 @@ export default function Kosh() {
             {wallets.map((wallet, index) => (
               <Card
                 key={wallet.id}
-                className="dark:bg-gray-900 dark:border-gray-800 shadow-md transition-all hover:shadow-lg"
+                className="dark:bg-black dark:border-gray-800 shadow-md transition-all hover:shadow-lg"
               >
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
