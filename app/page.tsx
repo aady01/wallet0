@@ -205,7 +205,7 @@ export default function HdWallet() {
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:space-x-2">
               <Input
-                className="flex-1 dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-lg"
+                className="flex-1 dark:bg-black dark:border-gray-700 dark:text-white rounded-lg"
                 value={mnemonic}
                 onChange={(e) => setMnemonic(e.target.value)}
                 placeholder="Enter your secret phrase (or leave blank to generate)"
@@ -309,7 +309,7 @@ export default function HdWallet() {
                         Copy
                       </Button>
                     </div>
-                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
+                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-black dark:text-gray-300 overflow-x-auto">
                       {wallet.publicKey}
                     </div>
                   </div>
@@ -349,7 +349,7 @@ export default function HdWallet() {
                         </Button>
                       </div>
                     </div>
-                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
+                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-black dark:text-gray-300 overflow-x-auto">
                       {showPrivateKeys[wallet.id]
                         ? wallet.privateKey
                         : "•".repeat(
@@ -376,8 +376,8 @@ export default function HdWallet() {
                             <EyeIcon className="h-3 w-3" />
                           )}
                           <span className="sr-only">
-                            {showMnemonics[wallet.id] ? "Hide" : "Show"}{" "}
-                            secret phrase
+                            {showMnemonics[wallet.id] ? "Hide" : "Show"} secret
+                            phrase
                           </span>
                         </Button>
                         <Button
@@ -393,7 +393,7 @@ export default function HdWallet() {
                         </Button>
                       </div>
                     </div>
-                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
+                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-black  dark:text-gray-300 overflow-x-auto">
                       {showMnemonics[wallet.id]
                         ? wallet.mnemonic
                         : "•".repeat(
