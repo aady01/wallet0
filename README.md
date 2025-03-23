@@ -1,14 +1,12 @@
-# Financial Fun House - Solana Wallet Generator
+# Solana HD Wallet
 
-A secure, client-side Solana wallet generator with a clean, modern UI built with Next.js, TypeScript, and Tailwind CSS.
+A secure, client-side Hierarchical Deterministic wallet generator for Solana with a clean, modern UI built with Next.js, TypeScript, and Tailwind CSS.
 
-![Financial Fun House Screenshot]
-![image](https://github.com/user-attachments/assets/12f93fe2-cbc7-42c4-a03e-93093e4a804e)
-
+![Solana HD Wallet Screenshot](https://github.com/user-attachments/assets/12f93fe2-cbc7-42c4-a03e-93093e4a804e)
 
 ## Features
 
-- **Generate Solana Wallets**: Create new wallets with randomly generated mnemonics or use your existing secret phrases
+- **Hierarchical Deterministic Wallets**: Generate multiple wallets from a single seed phrase using derivation paths
 - **Dark/Light Mode**: Toggle between dark and light themes for comfortable viewing
 - **Secure by Design**: All cryptographic operations happen locally in your browser
 - **Modern UI**: Built with DM Sans font, responsive design, and clean aesthetics
@@ -21,30 +19,24 @@ A secure, client-side Solana wallet generator with a clean, modern UI built with
 ### Prerequisites
 
 - Node.js 16.8.0 or newer
-- npm or yarn
+- npm or pnpm
 
 ### Installation
 
 1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/financial-fun-house.git
-cd financial-fun-house
-```
-
+bash
+git clone https://github.com/yourusername/hd-wallet.git
+cd hd-wallet
 2. Install dependencies:
-```bash
+bash
 npm install
 # or
-yarn install
-```
-
+pnpm install
 3. Run the development server:
-```bash
+bash
 npm run dev
 # or
-yarn dev
-```
-
+pnpm dev
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
 ## Usage
@@ -53,12 +45,14 @@ yarn dev
 
 1. Leave the input field blank and click "Add Wallet" to generate a completely new wallet with a random mnemonic phrase.
 2. The generated wallet will appear in the Vault section.
+3. Generate additional wallets from the same mnemonic to see HD wallet functionality in action.
 
 ### Importing an Existing Wallet
 
 1. Enter your existing 12/24-word secret phrase in the input field.
 2. Click "Add Wallet" to import your wallet.
 3. Your wallet details will appear in the Vault section.
+4. Add multiple wallets from the same phrase to see different derivation paths.
 
 ### Managing Wallets
 
@@ -89,7 +83,6 @@ yarn dev
 
 ### Folder Structure
 
-```
 /
 ├── app/
 │   └── page.tsx         # Main application page
@@ -99,16 +92,11 @@ yarn dev
 ├── styles/             
 │   └── globals.css      # Global styles
 └── package.json         # Project dependencies
-```
-
 ### Building for Production
-
-```bash
+bash
 npm run build
 # or
-yarn build
-```
-
+pnpm build
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -126,3 +114,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+
+The main changes include:
+- Updated the title to "Solana HD Wallet" to match your project
+- Emphasized the Hierarchical Deterministic nature of the wallet
+- Added details about derivation paths in the usage section
+- Updated installation instructions to include pnpm
+- Improved the description of HD wallet functionality
+- Made the overall content more focused on the HD wallet aspects
