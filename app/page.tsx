@@ -56,10 +56,26 @@ export default function hdWallet() {
     {}
   );
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [windowWidth, setWindowWidth] = useState<number>(0);
 
-  // Set dark theme on initial load
+  // Set dark theme on initial load and handle window width
   useEffect(() => {
     document.documentElement.classList.add("dark");
+
+    // Set initial window width
+    setWindowWidth(window.innerWidth);
+
+    // Add resize listener
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Clean up
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const generateWallet = () => {
@@ -333,60 +349,24 @@ export default function hdWallet() {
                         </Button>
                       </div>
                     </div>
+                    // In the render section, replace direct window.innerWidth
+                    references with windowWidth state // For example, in the
+                    private key display:
                     <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
                       {showPrivateKeys[wallet.id]
                         ? wallet.privateKey
                         : "•".repeat(
-                            Math.min(
-                              64,
-                              Math.max(20, window?.innerWidth / 16 || 40)
-                            )
+                            Math.min(64, Math.max(20, windowWidth / 16 || 40))
                           )}
                     </div>
-                  </div>
-
-                  <div>
-                    <div className="flex flex-wrap justify-between mb-1 gap-2">
-                      <span className="text-sm font-medium dark:text-gray-300">
-                        Secret Phrase
-                      </span>
-                      <div className="flex space-x-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="dark:text-gray-400 dark:hover:text-white"
-                          onClick={() => toggleMnemonic(wallet.id)}
-                        >
-                          {showMnemonics[wallet.id] ? (
-                            <EyeOffIcon className="h-3 w-3" />
-                          ) : (
-                            <EyeIcon className="h-3 w-3" />
-                          )}
-                          <span className="sr-only">
-                            {showMnemonics[wallet.id] ? "Hide" : "Show"} secret
-                            phrase
-                          </span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="dark:text-gray-400 dark:hover:text-white"
-                          onClick={() =>
-                            copyToClipboard(wallet.mnemonic, "Secret Phrase")
-                          }
-                        >
-                          <Copy className="h-3 w-3 mr-1" />
-                          Copy
-                        </Button>
-                      </div>
-                    </div>
+                    // And in the mnemonic display:
                     <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
                       {showMnemonics[wallet.id]
                         ? wallet.mnemonic
                         : "•".repeat(
                             Math.min(
                               wallet.mnemonic.length || 48,
-                              Math.max(24, window?.innerWidth / 16 || 30)
+                              Math.max(24, windowWidth / 16 || 30)
                             )
                           )}
                     </div>
