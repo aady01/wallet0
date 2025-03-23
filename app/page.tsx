@@ -349,6 +349,16 @@ export default function HdWallet() {
                         </Button>
                       </div>
                     </div>
+                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
+                      {showPrivateKeys[wallet.id]
+                        ? wallet.privateKey
+                        : "•".repeat(
+                            Math.min(64, Math.max(20, windowWidth / 16 || 40))
+                          )}
+                    </div>
+                  </div>
+
+                  <div>
                     <div className="flex flex-wrap justify-between mb-1 gap-2">
                       <span className="text-sm font-medium dark:text-gray-300">
                         Secret Phrase
@@ -383,7 +393,6 @@ export default function HdWallet() {
                         </Button>
                       </div>
                     </div>
-                    {/* Private key display with windowWidth state */}
                     <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
                       {showMnemonics[wallet.id]
                         ? wallet.mnemonic
