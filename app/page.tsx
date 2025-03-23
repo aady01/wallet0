@@ -349,17 +349,41 @@ export default function HdWallet() {
                         </Button>
                       </div>
                     </div>
-                    // In the render section, replace direct window.innerWidth
-                    references with windowWidth state // For example, in the
-                    private key display:
-                    <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
-                      {showPrivateKeys[wallet.id]
-                        ? wallet.privateKey
-                        : "•".repeat(
-                            Math.min(64, Math.max(20, windowWidth / 16 || 40))
+                    <div className="flex flex-wrap justify-between mb-1 gap-2">
+                      <span className="text-sm font-medium dark:text-gray-300">
+                        Secret Phrase
+                      </span>
+                      <div className="flex space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="dark:text-gray-400 dark:hover:text-white"
+                          onClick={() => toggleMnemonic(wallet.id)}
+                        >
+                          {showMnemonics[wallet.id] ? (
+                            <EyeOffIcon className="h-3 w-3" />
+                          ) : (
+                            <EyeIcon className="h-3 w-3" />
                           )}
+                          <span className="sr-only">
+                            {showMnemonics[wallet.id] ? "Hide" : "Show"}{" "}
+                            secret phrase
+                          </span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="dark:text-gray-400 dark:hover:text-white"
+                          onClick={() =>
+                            copyToClipboard(wallet.mnemonic, "Secret Phrase")
+                          }
+                        >
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy
+                        </Button>
+                      </div>
                     </div>
-                    // And in the mnemonic display:
+                    {/* Private key display with windowWidth state */}
                     <div className="p-2 bg-muted rounded-md font-mono text-xs break-all dark:bg-gray-800 dark:text-gray-300 overflow-x-auto">
                       {showMnemonics[wallet.id]
                         ? wallet.mnemonic
