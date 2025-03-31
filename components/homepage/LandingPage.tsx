@@ -75,7 +75,7 @@ export default function LandingPage() {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-md sm:max-w-2xl">
           <Button
-            className={`${dmSans.variable} relative overflow-hidden group bg-gradient-to-r from-blue-500/90 to-blue-600/90 text-white px-6 sm:px-8 py-4 sm:py-5 text-base sm:text-lg font-light tracking-wide rounded-md border border-blue-400/20 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 w-full sm:w-auto`}
+            className={`${dmSans.variable} cursor-pointer relative overflow-hidden group bg-gradient-to-r from-blue-500/90 to-blue-600/90 text-white px-6 sm:px-8 py-4 sm:py-5 text-base sm:text-lg font-light tracking-wide rounded-md border border-blue-400/20 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 w-full sm:w-auto`}
             onClick={SolRedirect}
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"></span>
@@ -106,7 +106,7 @@ export default function LandingPage() {
           </Button>
 
           <Button
-            className={`${dmSans.variable} relative overflow-hidden group bg-gradient-to-r from-purple-500/90 to-purple-600/90 text-white px-6 sm:px-8 py-4 sm:py-5 text-base sm:text-lg font-light tracking-wide rounded-md border border-purple-400/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 w-full sm:w-auto`}
+            className={`${dmSans.variable} cursor-pointer relative overflow-hidden group bg-gradient-to-r from-purple-500/90 to-purple-600/90 text-white px-6 sm:px-8 py-4 sm:py-5 text-base sm:text-lg font-light tracking-wide rounded-md border border-purple-400/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 w-full sm:w-auto`}
             onClick={EthRedirect}
             disabled
           >
