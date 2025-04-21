@@ -60,34 +60,29 @@ export default function EthWallet() {
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Safely check if we're in a browser environment
+  // Add this browser check helper
   const isBrowser = typeof window !== "undefined";
 
-  // Modified localStorage effects with browser check
+  // Load wallets on initial mount only in browser
   useEffect(() => {
-    if (!isBrowser) return; // Skip this effect on the server
+    if (!isBrowser) return;
 
     document.documentElement.classList.add("dark");
-
-    // Set initial window width
     setWindowWidth(window.innerWidth);
 
-    // Add resize listener
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
 
     window.addEventListener("resize", handleResize);
 
-    // Load saved wallets from localStorage
+    // Safe localStorage access
     try {
       const savedWallets = localStorage.getItem("ethereumWallets");
       const savedMnemonic = localStorage.getItem("ethereumMnemonic");
 
       if (savedWallets) {
-        const parsedWallets = JSON.parse(savedWallets);
-        console.log("Loading saved Ethereum wallets:", parsedWallets.length);
-        setWallets(parsedWallets);
+        setWallets(JSON.parse(savedWallets));
       }
 
       if (savedMnemonic) {
@@ -97,15 +92,14 @@ export default function EthWallet() {
       console.error("Error loading from localStorage:", error);
     }
 
-    // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [isBrowser]); // Add isBrowser to dependencies
+  }, [isBrowser]);
 
-  // Save wallets to localStorage whenever they change
+  // Save wallets to localStorage
   useEffect(() => {
-    if (!isBrowser) return; // Skip this effect on the server
+    if (!isBrowser || wallets.length === 0) return;
 
     try {
       localStorage.setItem("ethereumWallets", JSON.stringify(wallets));
@@ -114,14 +108,14 @@ export default function EthWallet() {
     }
   }, [wallets, isBrowser]);
 
-  // Save mnemonic to localStorage whenever it changes
+  // Save mnemonic to localStorage
   useEffect(() => {
-    if (!isBrowser) return; // Skip this effect on the server
+    if (!isBrowser || !mnemonic) return;
 
     try {
       localStorage.setItem("ethereumMnemonic", mnemonic);
     } catch (error) {
-      console.error("Error saving mnemonic to localStorage:", error);
+      console.error("Error saving to localStorage:", error);
     }
   }, [mnemonic, isBrowser]);
 
@@ -199,9 +193,16 @@ export default function EthWallet() {
   const clearAllWallets = () => {
     setWallets([]);
     setMnemonic("");
-    // Clear localStorage
-    localStorage.removeItem("ethereumWallets");
-    localStorage.removeItem("ethereumMnemonic");
+
+    // Only clear localStorage in browser
+    if (isBrowser) {
+      try {
+        localStorage.removeItem("ethereumWallets");
+        localStorage.removeItem("ethereumMnemonic");
+      } catch (error) {
+        console.error("Error clearing localStorage:", error);
+      }
+    }
   };
 
   const copyToClipboard = (text: string, label: string) => {

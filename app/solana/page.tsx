@@ -28,7 +28,7 @@ import {
   Sun,
   ArrowLeft,
 } from "lucide-react";
-import { Toaster, toast } from "sonner"; // Update this import to include Toaster
+import { Toaster, toast } from "sonner";
 import Link from "next/link";
 
 // Add Google Fonts import for DM Sans
@@ -60,8 +60,13 @@ export default function HdWallet() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
+  // Add this browser check helper
+  const isBrowser = typeof window !== "undefined";
+
   // Set dark theme on initial load and handle window width
   useEffect(() => {
+    if (!isBrowser) return;
+
     document.documentElement.classList.add("dark");
 
     // Set initial window width
@@ -74,15 +79,13 @@ export default function HdWallet() {
 
     window.addEventListener("resize", handleResize);
 
-    // Load saved wallets from localStorage - with error handling
+    // Load saved wallets from localStorage - with safety checks
     try {
       const savedWallets = localStorage.getItem("solanaWallets");
       const savedMnemonic = localStorage.getItem("solanaMnemonic");
 
       if (savedWallets) {
-        const parsedWallets = JSON.parse(savedWallets);
-        console.log("Loading saved wallets:", parsedWallets.length);
-        setWallets(parsedWallets);
+        setWallets(JSON.parse(savedWallets));
       }
 
       if (savedMnemonic) {
@@ -90,46 +93,35 @@ export default function HdWallet() {
       }
     } catch (error) {
       console.error("Error loading from localStorage:", error);
-      // Reset localStorage if there was a parsing error
-      localStorage.removeItem("solanaWallets");
     }
 
     // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isBrowser]);
 
-  // Save wallets to localStorage whenever they change - with error handling
+  // Save wallets to localStorage whenever they change
   useEffect(() => {
+    if (!isBrowser || wallets.length === 0) return;
+
     try {
-      if (wallets.length > 0) {
-        const walletsJson = JSON.stringify(wallets);
-        localStorage.setItem("solanaWallets", walletsJson);
-        console.log("Saved wallets to localStorage:", wallets.length);
-      } else {
-        localStorage.removeItem("solanaWallets");
-      }
+      localStorage.setItem("solanaWallets", JSON.stringify(wallets));
     } catch (error) {
       console.error("Error saving to localStorage:", error);
     }
-  }, [wallets]);
+  }, [wallets, isBrowser]);
 
   // Save mnemonic to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("solanaMnemonic", mnemonic);
-  }, [mnemonic]);
+    if (!isBrowser || !mnemonic) return;
 
-  // Just below the useEffect loading block, add this debugging helper
-  useEffect(() => {
     try {
-      const savedWallets = localStorage.getItem("solanaWallets");
-      console.log("Debug - localStorage solanaWallets:", savedWallets);
-      console.log("Debug - Current wallets state:", wallets);
+      localStorage.setItem("solanaMnemonic", mnemonic);
     } catch (error) {
-      console.error("Error accessing localStorage:", error);
+      console.error("Error saving to localStorage:", error);
     }
-  }, [wallets]);
+  }, [mnemonic, isBrowser]);
 
   const generateWallet = () => {
     try {
@@ -187,9 +179,16 @@ export default function HdWallet() {
   const clearAllWallets = () => {
     setWallets([]);
     setMnemonic("");
-    // Fix: Correctly clear localStorage items
-    localStorage.removeItem("solanaWallets");
-    localStorage.removeItem("solanaMnemonic");
+
+    // Only clear localStorage in browser
+    if (isBrowser) {
+      try {
+        localStorage.removeItem("solanaWallets");
+        localStorage.removeItem("solanaMnemonic");
+      } catch (error) {
+        console.error("Error clearing localStorage:", error);
+      }
+    }
   };
 
   const copyToClipboard = (text: string, label: string) => {
