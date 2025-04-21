@@ -108,7 +108,6 @@ export default function LandingPage() {
           <Button
             className={`${dmSans.variable} cursor-pointer relative overflow-hidden group bg-gradient-to-r from-purple-500/90 to-purple-600/90 text-white px-6 sm:px-8 py-4 sm:py-5 text-base sm:text-lg font-light tracking-wide rounded-md border border-purple-400/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 w-full sm:w-auto`}
             onClick={EthRedirect}
-            disabled
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-400 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"></span>
             <span className="relative flex items-center justify-center gap-2">
@@ -146,7 +145,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <div className="absolute bottom-4 sm:bottom-6 text-gray-500 text-xs sm:text-sm z-10 text-center px-4">
-        Secure, client-side wallet generation • No data stored
+        Secure, client-side wallet generation • Data stored only in your browser
       </div>
     </div>
   );

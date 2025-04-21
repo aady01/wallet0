@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Keypair } from "@solana/web3.js";
 import * as bip39 from "bip39";
-import { derivePath } from "ed25519-hd-key";
+import { hdkey } from "ethereumjs-wallet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,7 +27,7 @@ import {
   Sun,
   ArrowLeft,
 } from "lucide-react";
-import { Toaster, toast } from "sonner"; // Update this import to include Toaster
+import { Toaster, toast } from "sonner";
 import Link from "next/link";
 
 // Add Google Fonts import for DM Sans
@@ -42,13 +41,13 @@ const dmSans = DM_Sans({
 
 interface WalletData {
   id: string;
-  publicKey: string;
+  address: string;
   privateKey: string;
   mnemonic: string;
-  path: string; // Added path to store the derivation path
+  path: string;
 }
 
-export default function HdWallet() {
+export default function EthWallet() {
   const [mnemonic, setMnemonic] = useState<string>("");
   const [wallets, setWallets] = useState<WalletData[]>([]);
   const [showPrivateKeys, setShowPrivateKeys] = useState<
@@ -59,9 +58,15 @@ export default function HdWallet() {
   );
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [windowWidth, setWindowWidth] = useState<number>(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Set dark theme on initial load and handle window width
+  // Safely check if we're in a browser environment
+  const isBrowser = typeof window !== "undefined";
+
+  // Modified localStorage effects with browser check
   useEffect(() => {
+    if (!isBrowser) return; // Skip this effect on the server
+
     document.documentElement.classList.add("dark");
 
     // Set initial window width
@@ -74,14 +79,14 @@ export default function HdWallet() {
 
     window.addEventListener("resize", handleResize);
 
-    // Load saved wallets from localStorage - with error handling
+    // Load saved wallets from localStorage
     try {
-      const savedWallets = localStorage.getItem("solanaWallets");
-      const savedMnemonic = localStorage.getItem("solanaMnemonic");
+      const savedWallets = localStorage.getItem("ethereumWallets");
+      const savedMnemonic = localStorage.getItem("ethereumMnemonic");
 
       if (savedWallets) {
         const parsedWallets = JSON.parse(savedWallets);
-        console.log("Loading saved wallets:", parsedWallets.length);
+        console.log("Loading saved Ethereum wallets:", parsedWallets.length);
         setWallets(parsedWallets);
       }
 
@@ -90,48 +95,52 @@ export default function HdWallet() {
       }
     } catch (error) {
       console.error("Error loading from localStorage:", error);
-      // Reset localStorage if there was a parsing error
-      localStorage.removeItem("solanaWallets");
     }
 
     // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isBrowser]); // Add isBrowser to dependencies
 
-  // Save wallets to localStorage whenever they change - with error handling
+  // Save wallets to localStorage whenever they change
   useEffect(() => {
+    if (!isBrowser) return; // Skip this effect on the server
+
     try {
-      if (wallets.length > 0) {
-        const walletsJson = JSON.stringify(wallets);
-        localStorage.setItem("solanaWallets", walletsJson);
-        console.log("Saved wallets to localStorage:", wallets.length);
-      } else {
-        localStorage.removeItem("solanaWallets");
-      }
+      localStorage.setItem("ethereumWallets", JSON.stringify(wallets));
     } catch (error) {
       console.error("Error saving to localStorage:", error);
     }
-  }, [wallets]);
+  }, [wallets, isBrowser]);
 
   // Save mnemonic to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("solanaMnemonic", mnemonic);
-  }, [mnemonic]);
+    if (!isBrowser) return; // Skip this effect on the server
+
+    try {
+      localStorage.setItem("ethereumMnemonic", mnemonic);
+    } catch (error) {
+      console.error("Error saving mnemonic to localStorage:", error);
+    }
+  }, [mnemonic, isBrowser]);
 
   // Just below the useEffect loading block, add this debugging helper
   useEffect(() => {
     try {
-      const savedWallets = localStorage.getItem("solanaWallets");
-      console.log("Debug - localStorage solanaWallets:", savedWallets);
+      const savedWallets = localStorage.getItem("ethereumWallets");
+      console.log("Debug - localStorage ethereumWallets:", savedWallets);
       console.log("Debug - Current wallets state:", wallets);
     } catch (error) {
       console.error("Error accessing localStorage:", error);
     }
   }, [wallets]);
 
-  const generateWallet = () => {
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
+  const generateWallet = async () => {
     try {
       // If mnemonic is empty, generate one
       const phrase = mnemonic.trim() ? mnemonic : bip39.generateMnemonic();
@@ -141,7 +150,7 @@ export default function HdWallet() {
         return;
       }
 
-      const seed = bip39.mnemonicToSeedSync(phrase);
+      const seed = await bip39.mnemonicToSeed(phrase);
 
       // Calculate the next index based on existing wallets with the same mnemonic
       const existingWalletsWithSameMnemonic = wallets.filter(
@@ -150,10 +159,13 @@ export default function HdWallet() {
       const nextIndex = existingWalletsWithSameMnemonic.length;
 
       // Create a unique path for this wallet using the index
-      const path = `m/44'/501'/${nextIndex}'/0'`;
+      // Ethereum uses m/44'/60'/0'/0/index
+      const path = `m/44'/60'/0'/0/${nextIndex}`;
 
-      const derivedSeed = derivePath(path, seed.toString("hex")).key;
-      const keypair = Keypair.fromSeed(derivedSeed);
+      const hdwallet = hdkey.fromMasterSeed(seed);
+      const wallet = hdwallet.derivePath(path).getWallet();
+      const address = `0x${wallet.getAddress().toString("hex")}`;
+      const privateKey = wallet.getPrivateKey().toString("hex");
 
       const walletId = Date.now().toString();
 
@@ -161,10 +173,10 @@ export default function HdWallet() {
         ...prev,
         {
           id: walletId,
-          publicKey: keypair.publicKey.toBase58(),
-          privateKey: Buffer.from(keypair.secretKey).toString("hex"),
+          address: address,
+          privateKey: privateKey,
           mnemonic: phrase,
-          path: path, // Store the path used
+          path: path,
         },
       ]);
 
@@ -173,10 +185,10 @@ export default function HdWallet() {
         setMnemonic(phrase);
       }
 
-      toast.success("Wallet generated successfully!");
+      toast.success("Ethereum wallet generated successfully!");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to generate wallet");
+      toast.error("Failed to generate Ethereum wallet");
     }
   };
 
@@ -187,9 +199,9 @@ export default function HdWallet() {
   const clearAllWallets = () => {
     setWallets([]);
     setMnemonic("");
-    // Fix: Correctly clear localStorage items
-    localStorage.removeItem("solanaWallets");
-    localStorage.removeItem("solanaMnemonic");
+    // Clear localStorage
+    localStorage.removeItem("ethereumWallets");
+    localStorage.removeItem("ethereumMnemonic");
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -221,6 +233,15 @@ export default function HdWallet() {
     }
   };
 
+  // Test write
+  localStorage.setItem("testKey", "testValue");
+  // Test read
+  console.log(localStorage.getItem("testKey"));
+
+  if (!isLoaded) {
+    return <div>Loading your wallets...</div>;
+  }
+
   return (
     <div
       className={`${dmSans.variable} font-sans min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-black dark:via-gray-900 dark:to-black relative overflow-hidden`}
@@ -250,7 +271,7 @@ export default function HdWallet() {
           </Link>
 
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 tracking-tight text-center">
-            Solana HD Wallet
+            Ethereum HD Wallet
           </h1>
 
           <Button
@@ -276,7 +297,7 @@ export default function HdWallet() {
         <Card className="mb-8 bg-white/80 dark:bg-gray-900/30 backdrop-blur-sm border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-all">
           <CardHeader>
             <CardTitle className="text-gray-900 dark:text-white text-xl md:text-2xl">
-              Generate New Wallet
+              Generate New Ethereum Wallet
             </CardTitle>
             <CardDescription className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
               Enter a secret phrase or leave blank to generate a new one
@@ -329,7 +350,7 @@ export default function HdWallet() {
 
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-            Your Wallets
+            Your Ethereum Wallets
           </h2>
           <Button
             variant="destructive"
@@ -345,7 +366,7 @@ export default function HdWallet() {
         {wallets.length === 0 ? (
           <Card className="bg-white/50 dark:bg-gray-900/30 backdrop-blur-sm border border-gray-200 dark:border-gray-800 shadow-sm">
             <CardContent className="p-12 text-center text-gray-500 dark:text-gray-400">
-              No wallets generated yet. Add a wallet to get started.
+              No Ethereum wallets generated yet. Add a wallet to get started.
             </CardContent>
           </Card>
         ) : (
@@ -379,14 +400,14 @@ export default function HdWallet() {
                   <div>
                     <div className="flex flex-wrap justify-between mb-1 gap-2">
                       <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Public Key
+                        Ethereum Address
                       </span>
                       <Button
                         variant="ghost"
                         size="sm"
                         className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 h-6 px-2"
                         onClick={() =>
-                          copyToClipboard(wallet.publicKey, "Public Key")
+                          copyToClipboard(wallet.address, "Ethereum Address")
                         }
                       >
                         <Copy className="h-3 w-3 mr-1" />
@@ -394,7 +415,7 @@ export default function HdWallet() {
                       </Button>
                     </div>
                     <div className="p-2 bg-gray-50 dark:bg-black/50 rounded-md font-mono text-xs break-all text-gray-800 dark:text-gray-300 overflow-x-auto border border-gray-100 dark:border-gray-800">
-                      {wallet.publicKey}
+                      {wallet.address}
                     </div>
                   </div>
 
@@ -497,7 +518,8 @@ export default function HdWallet() {
 
       {/* Footer */}
       <div className="absolute bottom-0 w-full py-4 text-center text-gray-500 dark:text-gray-400 text-sm backdrop-blur-sm bg-white/30 dark:bg-black/30 border-t border-gray-200 dark:border-gray-800">
-        Secure, client-side wallet generation • Data stored only in your browser
+        Secure, client-side Ethereum wallet generation • Data stored only in
+        your browser
       </div>
     </div>
   );
