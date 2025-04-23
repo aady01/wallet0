@@ -1,11 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   reactStrictMode: true,
-  swcMinify: true,
-  // Disable static generation for client-side only pages
+  output: "standalone",
   experimental: {
-    serverActions: true,
+    // Remove serverActions if not needed or configure it properly
   },
 };
 
