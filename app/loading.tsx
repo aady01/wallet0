@@ -16,8 +16,8 @@ function Loading() {
     >
       {/* Background elements */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
       </div>
 
@@ -25,32 +25,14 @@ function Loading() {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MWgtNHYtMXptMC0yaDF2NGgtMXYtNHptMi0yaDF2MWgtMXYtMXptLTIgMmgxdjFoLTF2LTF6bS0yLTJoMXYxaC0xdi0xem0yLTJoMXYxaC0xdi0xem0tMiAyaDF2MWgtMXYtMXptLTItMmgxdjFoLTF2LTF6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30 z-0 pointer-events-none"></div>
 
       <div className="z-10 flex flex-col items-center justify-center space-y-8">
-        {/* Ethereum diamond animation */}
+        {/* Main loader animation */}
         <div className="relative flex items-center justify-center">
-          <div className="absolute w-16 h-16 rounded-full bg-purple-500/20 animate-ping"></div>
-          <div className="absolute w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 animate-pulse"></div>
-          <div className="w-12 h-12 flex items-center justify-center">
-            <svg
-              className="animate-float"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{
-                animation: "float 3s ease-in-out infinite",
-              }}
-            >
-              <path d="M12 2L5 12L12 9L12 2Z" fill="white" fillOpacity="0.6" />
-              <path d="M12 2L19 12L12 9L12 2Z" fill="white" />
-              <path d="M12 22V16L5 13L12 22Z" fill="white" fillOpacity="0.6" />
-              <path d="M12 22V16L19 13L12 22Z" fill="white" />
-              <path
-                d="M12 15L5 12L12 9L19 12L12 15Z"
-                fill="white"
-                fillOpacity="0.2"
-              />
-            </svg>
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 animate-spin-slow"></div>
+          <div className="absolute w-24 h-24 rounded-full bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-pink-500/30 animate-pulse"></div>
+          <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center">
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+              HD
+            </div>
           </div>
         </div>
 
@@ -78,14 +60,16 @@ function Loading() {
 
       {/* Add style for custom animation */}
       <style jsx>{`
-        @keyframes float {
-          0%,
+        @keyframes spin-slow {
+          0% {
+            transform: rotate(0deg);
+          }
           100% {
-            transform: translateY(0);
+            transform: rotate(360deg);
           }
-          50% {
-            transform: translateY(-10px);
-          }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 3s linear infinite;
         }
       `}</style>
     </div>

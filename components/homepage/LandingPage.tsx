@@ -4,6 +4,7 @@ import { DM_Sans } from "next/font/google";
 import TextPressure from "../ui/TextPressure/TextPressure";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 // Initialize DM Sans font
 const dmSans = DM_Sans({
@@ -80,27 +81,13 @@ export default function LandingPage() {
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"></span>
             <span className="relative flex items-center justify-center gap-2">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <Image
+                src="/solanaLogoMark.svg"
+                alt="Solana"
+                width={16}
+                height={16}
                 className="sm:w-[18px] sm:h-[18px]"
-              >
-                <path
-                  d="M20 5H4C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5Z"
-                  fill="white"
-                />
-                <path
-                  d="M12 11H4C3.44772 11 3 11.4477 3 12C3 12.5523 3.44772 13 4 13H12C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11Z"
-                  fill="white"
-                />
-                <path
-                  d="M16 17H4C3.44772 17 3 17.4477 3 18C3 18.5523 3.44772 19 4 19H16C16.5523 19 17 18.5523 17 18C17 17.4477 16.5523 17 16 17Z"
-                  fill="white"
-                />
-              </svg>
+              />
               Solana
             </span>
           </Button>
