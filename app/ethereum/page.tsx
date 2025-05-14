@@ -60,8 +60,13 @@ export default function EthWallet() {
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Add this browser check helper
+  const isBrowser = typeof window !== "undefined";
+
   // Remove localStorage related code
   useEffect(() => {
+    if (!isBrowser) return;
+
     document.documentElement.classList.add("dark");
     setWindowWidth(window.innerWidth);
 
@@ -71,14 +76,50 @@ export default function EthWallet() {
 
     window.addEventListener("resize", handleResize);
 
+    // Load saved wallets from localStorage - with safety checks
+    try {
+      const savedWallets = localStorage.getItem("ethereumWallets");
+      const savedMnemonic = localStorage.getItem("ethereumMnemonic");
+
+      if (savedWallets) {
+        setWallets(JSON.parse(savedWallets));
+      }
+
+      if (savedMnemonic) {
+        setMnemonic(savedMnemonic);
+      }
+    } catch (error) {
+      console.error("Error loading from localStorage:", error);
+    }
+
+    setIsLoaded(true);
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isBrowser]);
 
+  // Save wallets to localStorage whenever they change
   useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+    if (!isBrowser || wallets.length === 0) return;
+
+    try {
+      localStorage.setItem("ethereumWallets", JSON.stringify(wallets));
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+    }
+  }, [wallets, isBrowser]);
+
+  // Save mnemonic to localStorage whenever it changes
+  useEffect(() => {
+    if (!isBrowser || !mnemonic) return;
+
+    try {
+      localStorage.setItem("ethereumMnemonic", mnemonic);
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+    }
+  }, [mnemonic, isBrowser]);
 
   const generateWallet = async () => {
     try {
@@ -138,6 +179,16 @@ export default function EthWallet() {
   const clearAllWallets = () => {
     setWallets([]);
     setMnemonic("");
+
+    // Clear localStorage in browser
+    if (isBrowser) {
+      try {
+        localStorage.removeItem("ethereumWallets");
+        localStorage.removeItem("ethereumMnemonic");
+      } catch (error) {
+        console.error("Error clearing localStorage:", error);
+      }
+    }
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -449,7 +500,8 @@ export default function EthWallet() {
 
       {/* Footer */}
       <div className="absolute bottom-0 w-full py-4 text-center text-gray-500 dark:text-gray-400 text-sm backdrop-blur-sm bg-white/30 dark:bg-black/30 border-t border-gray-200 dark:border-gray-800">
-        Secure, client-side Ethereum wallet generation
+        Secure, client-side Ethereum wallet generation • Data stored only in
+        your browser
       </div>
     </div>
   );
