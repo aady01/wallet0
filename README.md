@@ -1,6 +1,6 @@
-# Solana HD Wallet
+# Wallet0
 
-# Solana HD Wallet
+# Wallet0
 
 A secure, client-side Hierarchical Deterministic (HD) wallet generator for Solana with a clean, modern UI built using **Next.js, TypeScript, and Tailwind CSS**.  
 A secure, client-side Hierarchical Deterministic wallet generator for Solana with a clean, modern UI built with Next.js, TypeScript, and Tailwind CSS.
